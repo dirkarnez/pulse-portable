@@ -20,10 +20,9 @@ jobs:
           dir
           
       - name: install
-        shell: cmd
         run: |
-          installer.exe
-
+          Start-Process -WindowStyle Hidden -Wait -ArgumentList "/silent" -PassThru -FilePath '.\installer.exe'
+          
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
