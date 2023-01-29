@@ -16,7 +16,9 @@ jobs:
       - name: Pulse
         shell: cmd
         run: | 
-          curl https://c8q9x5e9.map2.ssl.hwcdn.net/Pulse%20Web%20Setup%2040.3.16.exe -L --output installer.exe
+          curl https://c8q9x5e9.map2.ssl.hwcdn.net/Pulse%20Web%20Setup%2040.3.16.exe -L --output installer.exe &&^
+          dir
+          
       - name: install
         shell: cmd
         run: |
