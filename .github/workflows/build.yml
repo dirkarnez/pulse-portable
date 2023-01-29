@@ -1,0 +1,37 @@
+name: portable-python-release-actions-workflow
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'c*'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: windows-latest
+    env:
+      targetZip: pulse-40.3.16-portable.zip
+    steps:
+      - name: Pulse
+        shell: cmd
+        run: | 
+          curl https://c8q9x5e9.map2.ssl.hwcdn.net/Pulse%20Web%20Setup%2040.3.16.exe -L --output installer.exe
+      - name: install
+        shell: cmd
+        run: |
+          installer.exe
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: "zip"
+          directory: "%LOCALAPPDATA%/Programs/pulse"
+          filename: "${{ env.targetZip }}"
+
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "%LOCALAPPDATA%/Programs/pulse/${{ env.targetZip }}"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
