@@ -13,26 +13,31 @@ jobs:
     env:
       targetZip: pulse-40.3.16-portable.zip
     steps:
-      - name: Pulse
-        shell: cmd
-        run: | 
-          curl https://c8q9x5e9.map2.ssl.hwcdn.net/Pulse%20Web%20Setup%2040.3.16.exe -L --output installer.exe &&^
-          dir
+#       - name: Pulse
+#         shell: cmd
+#         run: | 
+#           curl https://c8q9x5e9.map2.ssl.hwcdn.net/Pulse%20Web%20Setup%2040.3.16.exe -L --output installer.exe &&^
+#           dir
           
-      - name: install
+#       - name: install
+#         run: |
+#           Start-Process -WindowStyle Hidden -Wait -ArgumentList "/silent" -PassThru -FilePath 'installer.exe'
+          
+      - shell: cmd
         run: |
-          Start-Process -WindowStyle Hidden -Wait -ArgumentList "/silent" -PassThru -FilePath 'installer.exe'
+          curl https://c8q9x5e9.map2.ssl.hwcdn.net/pulse-40.3.16-x64.nsis.7z -L --output installer.7z &&^
+          7z.exe x installer.7z -o"installer"
           
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: "zip"
-          directory: "%LOCALAPPDATA%/Programs/pulse"
+          directory: "installer"      # "%LOCALAPPDATA%/Programs/pulse"
           filename: "${{ env.targetZip }}"
 
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "%LOCALAPPDATA%/Programs/pulse/${{ env.targetZip }}"
+          artifacts: "installer/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
